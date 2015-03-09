@@ -1,0 +1,12 @@
+first_name: Brad
+last_name: Gessler
+projects:
+  - name: Firehose.io
+    url: https://github.com/firehose/gem
+    contributors:
+      - Brad Gessler
+      - Zach Zolton
+      - Ronald McDonald
+  - name: Krackle
+    url: https://github.com/bradgessler/krackle
+  - name: Nada
