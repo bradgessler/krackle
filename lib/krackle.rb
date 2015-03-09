@@ -8,7 +8,7 @@ module Krackle
     end
 
     def query(expression)
-      Query.new(@hash, expression)
+      Query.new(@hash, expression).results
     end
   end
 
@@ -19,15 +19,18 @@ module Krackle
 
     def results
       nodes = Array[@hash]
+      # p tokenize
 
-      tokens.each do |(token, value)|
-        p token, value
+      tokenize.each do |(token, value)|
+        # p [token, value], nodes, "-"*30
         case token
         when :KEY
-          nodes = nodes.map{ |node| node[value] }.compact.flatten
+          nodes = nodes.map{ |node| node[value] }.compact
         when :COLLECTION
           if value
-            nodes = nodes.map{ |node| node[value] }
+            nodes = nodes.map{ |node| node[value] }.compact
+          else
+            nodes = nodes.flatten.compact
           end
         end
       end
@@ -36,26 +39,23 @@ module Krackle
     end
 
   private
-    def tokens
-      [
-        [:KEY, "projects"],
-        [:COLLECTION],
-        [:KEY, "name"],
-      ]
+    def tokenize
+      scanner = StringScanner.new(@expression)
+      tokens = []
+      until scanner.empty?
+        case 
+          when match = scanner.scan(/\[(\d+)?\]/)
+            tokens << [:COLLECTION, (scanner[1] ? scanner[1].to_i : nil)]
+          when match =scanner.scan(/\.?(\w+)/)
+            tokens << [:KEY, scanner[1]]
+          else
+            raise "Say what? <#{scanner.peek(10).inspect}> at pos #{scanner.pos}"
+          end
+      end
+      tokens
     end
   end
 
   class CLI
-    def initialize(args=ARGV, io)
-      @expression = args.first
-      @io = io
-    end
-
-  private
-    def tokenize(expression)
-    end
-
-    def parse(expression)
-    end
   end
 end

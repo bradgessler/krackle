@@ -1,12 +1,23 @@
 first_name: Brad
 last_name: Gessler
+location:
+  state: CA
+  city: San Francisco
+  tax_brackets:
+    - high
+    - really high
+    - my eyes are bleeding high
 projects:
   - name: Firehose.io
     url: https://github.com/firehose/gem
     contributors:
       - Brad Gessler
       - Zach Zolton
-      - Ronald McDonald
   - name: Krackle
     url: https://github.com/bradgessler/krackle
+    contributors:
+      - Brad Gessler
+      - Ronald McDonald
+      - first_name: Billy
+        last_name: Goat
   - name: Nada
