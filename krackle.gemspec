@@ -8,9 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = Krackle::VERSION
   spec.authors       = ["Brad Gessler"]
   spec.email         = ["bradgessler@gmail.com"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
+  spec.summary       = %q{Query semi-structure data from the command line.}
+  spec.homepage      = "https://github.com/bradgessler/krackle"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
