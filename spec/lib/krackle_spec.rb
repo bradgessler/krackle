@@ -41,5 +41,7 @@ describe Krackle::Engine do
 end
 
 describe Krackle::CLI do
-
+  it "parses cli" do
+    expect(Krackle::CLI.new(["projects[].contributors[0]", "spec/fixtures/profile.yml"]).run).to eql("Brad Gessler\nBrad Gessler")
+  end
 end

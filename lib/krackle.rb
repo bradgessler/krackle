@@ -8,39 +8,17 @@ module Krackle
     end
 
     def query(expression)
-      Query.new(@hash, expression).results
+      Parser.new(Tokenizer.new(expression).tokenize).parse(@hash)
     end
   end
 
-  class Query
-    def initialize(hash, expression)
-      @hash, @expression = hash, expression
+  class Tokenizer
+    def initialize(str)
+      @str = str
     end
 
-    def results
-      nodes = Array[@hash]
-      # p tokenize
-
-      tokenize.each do |(token, value)|
-        # p [token, value], nodes, "-"*30
-        case token
-        when :KEY
-          nodes = nodes.map{ |node| node[value] }.compact
-        when :COLLECTION
-          if value
-            nodes = nodes.map{ |node| node[value] }.compact
-          else
-            nodes = nodes.flatten.compact
-          end
-        end
-      end
-
-      nodes
-    end
-
-  private
     def tokenize
-      scanner = StringScanner.new(@expression)
+      scanner = StringScanner.new(@str)
       tokens = []
       until scanner.empty?
         case 
@@ -56,6 +34,45 @@ module Krackle
     end
   end
 
+  class Parser
+    def initialize(tokens)
+      @tokens = tokens
+    end
+
+    def parse(hash)
+      nodes = Array[hash]
+      # p tokenize
+
+      @tokens.each do |(token, value)|
+        # p [token, value], nodes, "-"*30
+        case token
+        when :KEY
+          nodes = nodes.map{ |node| node[value] }.compact
+        when :COLLECTION
+          if value
+            nodes = nodes.map{ |node| node[value] }.compact
+          else
+            nodes = nodes.flatten.compact
+          end
+        end
+      end
+
+      nodes
+    end
+  end
+
   class CLI
+    def initialize(args=ARGV)
+      @expression, @path = args
+    end
+
+    def run
+      io = if @path
+        File.open(@path, 'r')
+      else
+        $stdin.tty? ? raise("Specify a file path") : $stdin
+      end
+      Engine.new(YAML.load(io.read)).query(@expression).join("\n")
+    end
   end
 end
